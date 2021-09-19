@@ -20,9 +20,12 @@
   }
 </script>
 
-<div class="pt-6 px-8 py-4 flex flex-direction {checked ? 'text-gray-400 dark:text-dark-50' : ''}" on:click={onClick}>
+<div class="pt-6 px-8 py-4 flex flex-direction {checked ? 'text-gray-400 dark:text-dark-50 line-through' : ''}" on:click={onClick}>
   <Checkbox bind:checked on:click={onClick} bind:this={checkbox}/>
-  <span class="pl-2 {checked ? 'line-through' : ''}">{item.habit.name}</span>
+  <span class="pl-2">{item.habit.name}</span>
+  {#if item.duration > 1 && item.remainingDays > 1 && !item.event.isDone}
+    <span class="pl-2 opacity-50">- {item.remainingDays - 1} more day{item.remainingDays - 1 > 1 ? 's' : ''}</span>
+  {/if}
   <div class="flex-grow"></div>
   <span class="">{getNumberWithOrdinal(item.event.index)}</span>
 </div>

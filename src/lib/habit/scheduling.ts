@@ -58,6 +58,10 @@ export function getDateSpanFor(schedule: Schedule, nth: number): DateOnlyRange {
   return {from, to};
 }
 
+export function getDurationDayCount(span: TimeSpan): number {
+  return span.count * (span.unit === 'week' ? 7 : 1);
+}
+
 function getNearestNthFrom(schedule: Schedule, dateOnly: DateOnly): number {
   if (toComparable(schedule.startDate) > toComparable(dateOnly))
     return 1;
@@ -74,10 +78,6 @@ function getNearestNthFrom(schedule: Schedule, dateOnly: DateOnly): number {
   const nthDayOfTheWeek = getClosestNthFrom(schedule.daysOfWeek, getDayOfWeek(schedule.startDate), getDayOfWeek(dateOnly));
 
   return cadencyTime * daysActivatedPerWeek + nthDayOfTheWeek;
-}
-
-function getDurationDayCount(span: TimeSpan): number {
-  return span.count * (span.unit === 'week' ? 7 : 1);
 }
 
 function mapSortDayOfWeek(day: DayOfWeek, weekStartOn: DayOfWeek): number {
