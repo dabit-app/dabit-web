@@ -64,6 +64,7 @@ function computeSlotsFor(events: CalendarEvents, currentMonthRange: DateOnlyRang
     } as CalendarSlotEvent;
 
     event.classes += [
+      habitEvent.isDone ? '' : 'opacity-20',
       event.stickOnLeft ? '' : 'rounded-l-md ml-4',
       event.stickOnRight ? '' : 'rounded-r-md mr-4'
     ].join(" ");

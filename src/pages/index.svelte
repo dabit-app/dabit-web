@@ -44,7 +44,7 @@
     </div>
     <div class="flex-grow"></div>
     <div class="flex items-end">
-      <p class="text-7xl pr-1 -mb-2">{dailyHabitData.filter(i => i.isDone).length}</p>
+      <p class="text-7xl pr-1 -mb-2">{dailyHabitData.filter(i => i.event.isDone).length}</p>
       <div class="flex flex-col">
         <p class="font-semibold text-xl">Tasks</p>
         <p class="text-xl">/ {dailyHabitData.length}</p>

@@ -6,7 +6,7 @@
   export let item: DailyHabitData;
 
   let checkbox;
-  $: checked = item.isDone
+  $: checked = item.event.isDone
 
   async function onClick() {
     await markCompletion(item, !checked)

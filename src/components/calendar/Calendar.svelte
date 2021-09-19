@@ -17,6 +17,8 @@
   $: baseCalendar = computeCalendarArray(currentMonth);
   $: events = computeScheduling(scheduling, currentMonth)
 
+  $: console.log(events)
+
   // function for convenience
   $: dayOfCurrentMonth = (day) => new Date(Date.UTC(currentMonth.year, currentMonth.month - 1, day));
 

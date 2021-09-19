@@ -21,7 +21,6 @@
       $fetchedResult = (results.length / data.total) * 100;
     }
 
-    console.log(results);
     habitStore.set(results);
   })
 

@@ -6,28 +6,31 @@ import {addDays, differenceInDays, getDayOfWeek, toComparable} from "../date/dat
 
 export interface HabitEvent {
   index: number;
+  isDone: boolean;
   range: DateOnlyRange;
 }
 
 export function getEventFor(habit: Habit, date: DateOnly): HabitEvent | undefined {
   let requestRange = {from: date, to: addDays(date, 1)} as DateOnlyRange;
-  let available = getAllWithin(requestRange, habit.schedule);
+  let available = getAllWithin(requestRange, habit);
   return available.find(event => toComparable(date) >= toComparable(event.range.from) && toComparable(date) < toComparable(event.range.to));
 }
 
-export function getAllWithin(range: DateOnlyRange, schedule: Schedule): HabitEvent[] {
-  const startNth = getNearestNthFrom(schedule, range.from);
+export function getAllWithin(range: DateOnlyRange, habit: Habit): HabitEvent[] {
+  const startNth = getNearestNthFrom(habit.schedule, range.from);
 
   let results = [];
   let currentNth = startNth;
   let shouldContinue = true;
 
   while (shouldContinue) {
-    let nthRange = getDateSpanFor(schedule, currentNth);
-    results.push({index: currentNth, range: nthRange} as HabitEvent)
+    let nthRange = getDateSpanFor(habit.schedule, currentNth);
+    let isDone = habit.completions.includes(currentNth);
+
+    results.push({index: currentNth, range: nthRange, isDone} as HabitEvent)
 
     currentNth += 1;
-    let hasReachedTheEndOfSchedule = schedule.endDate != null && toComparable(nthRange.to) >= toComparable(schedule.endDate);
+    let hasReachedTheEndOfSchedule = habit.schedule.endDate != null && toComparable(nthRange.to) >= toComparable(habit.schedule.endDate);
     let hasReachedTheEndOfTheRange = toComparable(nthRange.to) >= toComparable(range.to);
     shouldContinue = !hasReachedTheEndOfTheRange && !hasReachedTheEndOfSchedule;
   }

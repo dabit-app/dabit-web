@@ -7,15 +7,10 @@ export interface DailyHabitData {
   habit: Habit;
   day: DateOnly;
   event: HabitEvent;
-  isDone: boolean;
 }
 
 export function getDailyDataFor(habits: Habit[], date: DateOnly): DailyHabitData[] {
   return habits
     .map((habit: Habit) => ({habit, event: getEventFor(habit, date), day: date}))
-    .filter((item: DailyHabitData) => item.event !== undefined)
-    .map((item: DailyHabitData) => {
-      item.isDone = item.habit.completions.includes(item.event.index);
-      return item;
-    });
+    .filter((item: DailyHabitData) => item.event !== undefined);
 }
