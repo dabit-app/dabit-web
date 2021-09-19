@@ -1,0 +1,27 @@
+{
+  "name": "dabit-web",
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "run-p dev:*",
+    "dev:routify": "routify",
+    "dev:vite": "vite",
+    "serve": "vite preview",
+    "build": "npm-s build:*",
+    "build:routify": "routify -b",
+    "build:vite": "vite build"
+  },
+  "devDependencies": {
+    "@roxi/routify": "^2.18.3",
+    "@sveltejs/vite-plugin-svelte": "^1.0.0-next.22",
+    "@tsconfig/svelte": "^2.0.1",
+    "npm-run-all": "^4.1.5",
+    "svelte": "^3.42.5",
+    "svelte-preprocess": "^4.9.4",
+    "tslib": "^2.3.1",
+    "typescript": "^4.4.2",
+    "vite": "^2.5.6",
+    "vite-plugin-windicss": "^1.4.2",
+    "windicss": "^3.1.7"
+  }
+}
