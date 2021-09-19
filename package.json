@@ -3,6 +3,7 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
+    "preinstall": "npx only-allow pnpm",
     "dev": "run-p dev:*",
     "dev:routify": "routify",
     "dev:vite": "vite",
