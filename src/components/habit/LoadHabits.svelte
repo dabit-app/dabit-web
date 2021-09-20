@@ -3,18 +3,21 @@
   import {tweened} from "svelte/motion";
   import {cubicOut} from "svelte/easing";
   import {onMount} from "svelte";
-  import {habitStore} from "../../stores/habits";
+  import {habitStore, IndexedHabit} from "../../stores/habits";
 
   let shouldContinue = true;
   let currentPage = 1;
-  let results = [];
+  let results: IndexedHabit = {};
 
   const fetchedResult = tweened(0, {duration: 500, easing: cubicOut});
 
   onMount(async () => {
     while (shouldContinue) {
       let data = await getAllHabits(currentPage)
-      results.push(...data.items)
+
+      data.items.forEach(habit => {
+        results[habit.id] = habit;
+      })
 
       shouldContinue = results.length < data.total;
       currentPage += shouldContinue ? 1 : 0;

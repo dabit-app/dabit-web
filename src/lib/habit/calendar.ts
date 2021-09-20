@@ -1,12 +1,15 @@
-import type {HabitEvent} from "./scheduling";
+import type {HabitEvent, HabitSchedule} from "./scheduling";
 import type {DateOnlyRange, DateOnly} from "../date/date-only"
 import {differenceInDays, getDayOfWeek, getDaysInMonth, toComparable} from "../date/date-only";
 import type {SpecificMonth} from "../date/specific-month";
 import {getWholeMonthRange} from "../date/specific-month";
+import type {Habit} from "../../models/habit";
 
 type CalendarTakenSlot = 'taken';
 
 interface CalendarSlotEvent {
+  habit: Habit;
+  nth: number;
   duration: number;
   stickOnLeft: boolean;
   stickOnRight: boolean;
@@ -16,15 +19,15 @@ interface CalendarSlotEvent {
 
 type CalendarEvents = { [day: number]: { [slot: number]: CalendarSlotEvent | CalendarTakenSlot } };
 
-export function computeScheduling(schedules: HabitEvent[][], specificMonth: SpecificMonth): CalendarEvents {
+export function computeScheduling(schedules: HabitSchedule[], specificMonth: SpecificMonth): CalendarEvents {
   let events = {} as CalendarEvents;
   let currentMonthRange = getWholeMonthRange(specificMonth);
 
   initializeEventsWhichEachDayOfTheMonth(specificMonth, events);
 
   for (let schedule of schedules) {
-    for (let habitEvent of schedule) {
-      computeSlotsFor(events, currentMonthRange, habitEvent)
+    for (let habitEvent of schedule.events) {
+      computeSlotsFor(events, currentMonthRange, habitEvent, schedule.habit)
     }
   }
 
@@ -40,7 +43,7 @@ export function computeCalendarArray(date: SpecificMonth): (undefined | number)[
   return [...Array(calendarBeginningShift), ...allDaysThisMonth];
 }
 
-function computeSlotsFor(events: CalendarEvents, currentMonthRange: DateOnlyRange, habitEvent: HabitEvent) {
+function computeSlotsFor(events: CalendarEvents, currentMonthRange: DateOnlyRange, habitEvent: HabitEvent, habit: Habit) {
   let cutOnLeft = toComparable(currentMonthRange.from) > toComparable(habitEvent.range.from);
   let cutOnRight = toComparable(currentMonthRange.to) < toComparable(habitEvent.range.to);
 
@@ -57,6 +60,8 @@ function computeSlotsFor(events: CalendarEvents, currentMonthRange: DateOnlyRang
     let eventLength = Math.min(lengthAvailable, duration);
 
     let event = {
+      habit: habit,
+      nth: habitEvent.index,
       duration: eventLength,
       stickOnLeft: cutOnLeft || isNewLine,
       stickOnRight: cutOnRight || (eventLength == lengthAvailable && (duration - eventLength) > 0),

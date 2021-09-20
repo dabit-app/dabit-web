@@ -7,7 +7,7 @@
 
   let currentDay: DateOnly = today();
 
-  $: dailyHabitData = getDailyDataFor($habitStore, currentDay);
+  $: dailyHabitData = getDailyDataFor(Object.values($habitStore), currentDay);
 
   // get today's weekday label
   let formatWeekday = Intl.DateTimeFormat("en-US", {weekday: "long"})

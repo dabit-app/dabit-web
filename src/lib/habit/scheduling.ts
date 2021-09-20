@@ -4,6 +4,11 @@ import type {DaysOfWeek} from "../date/day-of-week";
 import {countDaysOfWeek, DayOfWeek, getAllDaysOfWeek, isDaysOfWeekEmpty} from "../date/day-of-week";
 import {addDays, differenceInDays, getDayOfWeek, toComparable} from "../date/date-only";
 
+export interface HabitSchedule {
+  habit: Habit;
+  events: HabitEvent[];
+}
+
 export interface HabitEvent {
   index: number;
   isDone: boolean;
@@ -13,13 +18,13 @@ export interface HabitEvent {
 export function getEventFor(habit: Habit, date: DateOnly): HabitEvent | undefined {
   let requestRange = {from: date, to: addDays(date, 1)} as DateOnlyRange;
   let available = getAllWithin(requestRange, habit);
-  return available.find(event => toComparable(date) >= toComparable(event.range.from) && toComparable(date) < toComparable(event.range.to));
+  return available.events.find(event => toComparable(date) >= toComparable(event.range.from) && toComparable(date) < toComparable(event.range.to));
 }
 
-export function getAllWithin(range: DateOnlyRange, habit: Habit): HabitEvent[] {
+export function getAllWithin(range: DateOnlyRange, habit: Habit): HabitSchedule {
   const startNth = getNearestNthFrom(habit.schedule, range.from);
 
-  let results = [];
+  let results: HabitEvent[] = [];
   let currentNth = startNth;
   let shouldContinue = true;
 
@@ -35,7 +40,7 @@ export function getAllWithin(range: DateOnlyRange, habit: Habit): HabitEvent[] {
     shouldContinue = !hasReachedTheEndOfTheRange && !hasReachedTheEndOfSchedule;
   }
 
-  return results;
+  return {habit, events: results};
 }
 
 export function getDateSpanFor(schedule: Schedule, nth: number): DateOnlyRange {

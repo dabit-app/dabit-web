@@ -3,11 +3,11 @@
   import Card from "../common/card/Card.svelte";
   import {createEventDispatcher} from "svelte";
   import {computeCalendarArray, computeScheduling} from "../../lib/habit/calendar";
-  import {HabitEvent} from "../../lib/habit/scheduling";
+  import {HabitSchedule} from "../../lib/habit/scheduling";
   import {addMonth, getCurrentMonth, SpecificMonth, toComparableMonth} from "../../lib/date/specific-month";
 
   export let currentMonth: SpecificMonth;
-  export let scheduling: HabitEvent[][];
+  export let scheduling: HabitSchedule[];
 
   let calendarWidth;
   let dispatch = createEventDispatcher();
@@ -16,8 +16,6 @@
   // making the base calendar
   $: baseCalendar = computeCalendarArray(currentMonth);
   $: events = computeScheduling(scheduling, currentMonth)
-
-  $: console.log(events)
 
   // function for convenience
   $: dayOfCurrentMonth = (day) => new Date(Date.UTC(currentMonth.year, currentMonth.month - 1, day));
@@ -71,7 +69,9 @@
               <div class="h-16px mt-8px"></div>
             {:else}
               <div style={event.styles}>
-                <div class="bg-orange-400 h-16px mt-8px {event.classes} relative"></div>
+                <div class="bg-orange-400 h-16px mt-8px {event.classes} relative">
+                  <div class="text-xs pl-2 pr-1 font-bold truncate max-h-4">{event.habit.name} #{event.nth}</div>
+                </div>
               </div>
             {/if}
           {/each}
