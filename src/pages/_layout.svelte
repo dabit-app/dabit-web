@@ -23,8 +23,9 @@
         <p class="text-4xl mr-5">Dabit</p>
 
         {#if $jwt !== null}
-          <Button text="Home" icon="home" className="mr-2" href="/"/>
+          <Button text="Daily" icon="home" className="mr-2" href="/daily"/>
           <Button text="Calendar" icon="event_available" className="mr-2" href="/calendar"/>
+          <Button text="Habits" icon="checklist" className="mr-2" href="/habit/all"/>
         {/if}
 
         <span class="flex-grow"></span>

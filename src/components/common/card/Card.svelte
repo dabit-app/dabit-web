@@ -7,6 +7,6 @@
   $: roundedClass = rounded ? 'rounded-md' : '';
 </script>
 
-<div class="flex flex-col bg-warm-gray-100 dark:bg-dark-400 {roundedClass} {hoverClass} {className}">
+<div class="bg-warm-gray-100 dark:bg-dark-400 {roundedClass} {hoverClass} {className}">
   <slot></slot>
 </div>
