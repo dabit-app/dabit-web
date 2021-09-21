@@ -51,6 +51,17 @@ export async function toggleDayCompletion(habit: Habit, day: DateOnly, completed
     .catch(_ => false)
 }
 
+export async function changeName(habit: Habit, name: string): Promise<boolean> {
+  return await fetchApi<EmptyResponse>(
+    `habit/${habit.id}/name`,
+    'PATCH',
+    {name},
+    get(jwt)
+  )
+    .then(_ => true)
+    .catch(_ => false)
+}
+
 function convertDateFromHabit(habit: any): Habit {
   habit.schedule.startDate = fromString(habit.schedule.startDate);
   habit.schedule.endDate = habit.schedule.endDate === null ? null : fromString(habit.schedule.endDate);

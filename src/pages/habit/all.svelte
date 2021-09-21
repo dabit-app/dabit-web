@@ -1,6 +1,6 @@
 <script lang="ts">
   import {habitStore} from "../../stores/habits";
-  import {getEventFor, getNearestNthFrom} from "../../lib/habit/scheduling";
+  import {getNearestNthFrom} from "../../lib/habit/scheduling";
   import {today} from "../../lib/date/date-only";
   import Button from "../../components/common/button/Button.svelte";
   import Icon from "../../components/common/icon/Icon.svelte";
@@ -41,7 +41,7 @@
           <p>{item.doneCount}/{item.upToTodayCount}</p>
         </div>
         <div class="table-cell bg-warm-gray-100 dark:bg-dark-400 align-middle">
-          <Button icon="edit" className="mx-3"/>
+          <Button icon="edit" className="mx-3 inline-block" href={`/habit/edit/${item.habit.id}`}/>
         </div>
       </div>
     {/each}
