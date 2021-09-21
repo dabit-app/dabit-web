@@ -18,7 +18,7 @@
     <div class="table-row">
       <div class="table-cell">
         <div class="flex flex-row ml-3">
-          <Icon>badge</Icon>
+          <Icon>text_fields</Icon>
           <div class="mt-0.1rem ml-1">Name</div>
         </div>
       </div>
