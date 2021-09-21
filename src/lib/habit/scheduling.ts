@@ -67,7 +67,7 @@ export function getDurationDayCount(span: TimeSpan): number {
   return span.count * (span.unit === 'week' ? 7 : 1);
 }
 
-function getNearestNthFrom(schedule: Schedule, dateOnly: DateOnly): number {
+export function getNearestNthFrom(schedule: Schedule, dateOnly: DateOnly): number {
   if (toComparable(schedule.startDate) > toComparable(dateOnly))
     return 1;
 

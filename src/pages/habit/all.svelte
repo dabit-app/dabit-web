@@ -1,6 +1,6 @@
 <script lang="ts">
   import {habitStore} from "../../stores/habits";
-  import {getEventFor} from "../../lib/habit/scheduling";
+  import {getEventFor, getNearestNthFrom} from "../../lib/habit/scheduling";
   import {today} from "../../lib/date/date-only";
   import Button from "../../components/common/button/Button.svelte";
   import Icon from "../../components/common/icon/Icon.svelte";
@@ -9,7 +9,7 @@
     .map(habit => ({
       habit,
       doneCount: habit.completions.length,
-      upToTodayCount: getEventFor(habit, today()).index
+      upToTodayCount: getNearestNthFrom(habit.schedule, today())
     }))
 </script>
 
