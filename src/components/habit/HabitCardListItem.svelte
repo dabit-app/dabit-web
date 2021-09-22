@@ -20,7 +20,7 @@
   }
 </script>
 
-<div class="pt-6 px-8 py-4 flex flex-direction {checked ? 'text-gray-400 dark:text-dark-50 line-through' : ''}" on:click={onClick}>
+<div class="pt-6 px-8 py-4 flex {checked ? 'text-gray-400 dark:text-dark-50 line-through' : ''}" on:click={onClick}>
   <Checkbox bind:checked on:click={onClick} bind:this={checkbox}/>
   <span class="pl-2">{item.habit.name}</span>
   {#if item.duration > 1 && item.remainingDays > 1 && !item.event.isDone}
