@@ -2,7 +2,7 @@
   import TextInput from "../../../components/common/form/TextInput.svelte";
   import {habitStore} from "../../../stores/habits";
   import Button from "../../../components/common/button/Button.svelte";
-  import {changeName} from "../../../lib/api/dabit-repository";
+  import {changeName} from "../../../lib/api/habit/change-name";
 
   export let id;
 

@@ -1,7 +1,7 @@
 <script lang="ts">
   import Checkbox from "../common/form/Checkbox.svelte";
   import {DailyHabitData} from "../../lib/habit/daily";
-  import {markCompletion} from "../../lib/api/dabit-repository";
+  import {markCompletion} from "../../lib/api/habit/mark-completions";
 
   export let item: DailyHabitData;
 

@@ -1,7 +1,7 @@
 <script lang="ts">
-  import {loginWithGoogle} from "../../lib/api/dabit-api";
   import {jwt} from "../../stores/auth";
   import {darkMode} from "../../stores/theme";
+  import {loginWithGoogle} from "../../lib/api/auth/login-with-google";
 
   interface GoogleResponse {
     credential: string;

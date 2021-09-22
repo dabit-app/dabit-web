@@ -1,9 +1,9 @@
 <script lang="ts">
-  import {getAllHabits} from "../../lib/api/dabit-api";
   import {tweened} from "svelte/motion";
   import {cubicOut} from "svelte/easing";
   import {onMount} from "svelte";
   import {habitStore, IndexedHabit} from "../../stores/habits";
+  import {getAllHabits} from "../../lib/api/habit/get-habit";
 
   let shouldContinue = true;
   let currentPage = 1;
