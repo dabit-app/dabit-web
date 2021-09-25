@@ -18,6 +18,18 @@ export enum DayOfWeek {
   Saturday = 6
 }
 
+export function getEmpty(): DaysOfWeek {
+  return {
+    monday: false,
+    tuesday: false,
+    wednesday: false,
+    thursday: false,
+    friday: false,
+    saturday: false,
+    sunday: false
+  }
+}
+
 export function getAllDaysOfWeek(days: DaysOfWeek): DayOfWeek[] {
   let result: DayOfWeek[] = [];
 

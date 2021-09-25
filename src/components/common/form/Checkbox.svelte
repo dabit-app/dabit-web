@@ -10,7 +10,6 @@
 </script>
 
 <div class="cursor-pointer {className}" on:click on:click|stopPropagation={toggleCheck}>
-  <input bind:checked class="hidden" type="checkbox"/>
   <div>
     {#if checked}
       <Icon>check_box</Icon>

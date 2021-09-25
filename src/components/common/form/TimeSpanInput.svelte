@@ -1,5 +1,6 @@
 <script lang="ts">
   import {TimeSpan} from "../../../models/habit";
+  import SelectInput from "./SelectInput.svelte";
 
   export let id;
   export let label = "";
@@ -24,8 +25,12 @@
 <div class="flex flex-row items-baseline {disabledClass} {className}">
   <label for={id} class="pr-3">{label}</label>
   <input id={id} type="number" min="1" class="flex-auto rounded-lg px-3 py-1 {inputClass}" bind:value={count}>
-  <select name="time-span-type" bind:value={unit} class="rounded-lg px-3 py-1.7 ml-2 {selectClass}">
+  <SelectInput name="time-span-type" bind:value={unit}>
     <option value="day">Day</option>
     <option value="week">Week</option>
-  </select>
+  </SelectInput>
+<!--  <select name="time-span-type" bind:value={unit} class="rounded-lg px-3 py-1.7 ml-2 {selectClass}">-->
+<!--    <option value="day">Day</option>-->
+<!--    <option value="week">Week</option>-->
+<!--  </select>-->
 </div>

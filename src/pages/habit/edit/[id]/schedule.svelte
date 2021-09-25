@@ -1,10 +1,14 @@
 <script lang="ts">
+  import type {DaysOfWeek} from "../../../../lib/date/day-of-week";
+  import * as DaysOfWeekHelper from "../../../../lib/date/day-of-week";
   import DateInput from "../../../../components/common/form/DateInput.svelte";
   import Button from "../../../../components/common/button/Button.svelte";
   import Checkbox from "../../../../components/common/form/Checkbox.svelte";
   import {Schedule, TimeSpan} from "../../../../models/habit";
   import * as DateOnly from "../../../../lib/date/date-only";
   import TimeSpanInput from "../../../../components/common/form/TimeSpanInput.svelte";
+  import SelectInput from "../../../../components/common/form/SelectInput.svelte";
+  import DaysOfWeekInput from "../../../../components/common/form/DaysOfWeekInput.svelte";
 
   export let scoped;
   $: habit = scoped.habit
@@ -14,12 +18,29 @@
   let useEndDate = false;
   let cadency: TimeSpan | null;
   let duration: TimeSpan | null;
+  let daysOfWeek: DaysOfWeek = DaysOfWeekHelper.getEmpty();
 
-  $: schedule = {
-    startDate: DateOnly.fromString(startDate),
-    endDate: useEndDate ? DateOnly.fromString(endDate) : null,
-    cadency, duration
-  } as Schedule;
+  let schedule: Schedule | null;
+  let typeOfSchedule: 'none' | 'standard' | 'weekly' = 'none';
+
+  $: {
+    schedule = {
+      startDate: DateOnly.fromString(startDate),
+      endDate: useEndDate ? DateOnly.fromString(endDate) : null,
+    } as Schedule;
+
+    if (typeOfSchedule === 'standard') {
+      schedule.cadency = cadency
+      schedule.duration = duration;
+      schedule.daysOfWeek = null;
+    }
+
+    if (typeOfSchedule === 'weekly') {
+      schedule.cadency = {count: 1, unit: 'week'} as TimeSpan
+      schedule.duration = {count: 1, unit: 'week'} as TimeSpan
+      schedule.daysOfWeek = daysOfWeek
+    }
+  }
 </script>
 
 
@@ -33,8 +54,22 @@
     <DateInput id="end-date" label="End date" bind:value={endDate} disabled={!useEndDate} className="flex-auto"/>
   </div>
 
-  <TimeSpanInput id="cadency" label="Cadency" bind:value={cadency} className="mt-2"/>
-  <TimeSpanInput id="duration" label="Duration" bind:value={duration} className="mt-2"/>
+  <div class="flex justify-center pt-2">
+    <SelectInput bind:value={typeOfSchedule}>
+      <option value="none">-</option>
+      <option value="standard">Standard</option>
+      <option value="weekly">Weekly</option>
+    </SelectInput>
+  </div>
+
+  {#if typeOfSchedule === 'none'}
+    <p class="opacity-50 text-center pt-2">Please select a type of schedule to continue</p>
+  {:else if typeOfSchedule === 'standard'}
+    <TimeSpanInput id="cadency" label="Cadency" bind:value={cadency} className="mt-2"/>
+    <TimeSpanInput id="duration" label="Duration" bind:value={duration} className="mt-2"/>
+  {:else if typeOfSchedule === 'weekly'}
+    <DaysOfWeekInput bind:value={daysOfWeek} className="pt-2"/>
+  {/if}
 
   <!-- Cadency, Duration, DayOfWeek -->
 
