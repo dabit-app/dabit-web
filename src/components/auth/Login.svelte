@@ -1,6 +1,6 @@
 <script lang="ts">
-  import Card from "../../components/common/card/Card.svelte";
-  import GoogleAuth from "../../components/auth/GoogleAuth.svelte";
+  import Card from "../common/card/Card.svelte";
+  import GoogleAuth from "./GoogleAuth.svelte";
 </script>
 
 <span>

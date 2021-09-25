@@ -24,5 +24,8 @@
     "vite": "^2.5.6",
     "vite-plugin-windicss": "^1.4.2",
     "windicss": "^3.1.7"
+  },
+  "dependencies": {
+    "jwt-decode": "^3.1.2"
   }
 }
