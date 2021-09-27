@@ -10,6 +10,7 @@
   import SelectInput from "../../../../components/common/form/SelectInput.svelte";
   import DaysOfWeekInput from "../../../../components/common/form/DaysOfWeekInput.svelte";
   import SmallCalendar from "../../../../components/calendar/small/SmallCalendar.svelte";
+  import {getDurationDayCount} from "../../../../lib/habit/scheduling";
 
   export let scoped;
   $: habit = scoped.habit
@@ -26,8 +27,8 @@
 
   function isScheduleValid(): boolean {
     const dateCorrect = startDate?.length > 0 && (!useEndDate || endDate?.length > 0)
-    const standardCorrect = !!cadency && !!duration;
-    const weeklyCorrect = !!schedule;
+    const standardCorrect = !!cadency && !!duration && getDurationDayCount(duration) <= getDurationDayCount(cadency);
+    const weeklyCorrect = !!daysOfWeek;
 
     switch (typeOfSchedule) {
       case "none":
@@ -70,7 +71,6 @@
   <div>
     <div class="text-2xl text-center pb-2">Setup</div>
 
-
     <div class="flex mt-2">
       <div class="w-8"></div>
       <DateInput id="start-date" label="Start date" labelClass="w-22" bind:value={startDate} className="flex-auto"/>
@@ -92,10 +92,10 @@
     {#if typeOfSchedule === 'none'}
       <p class="opacity-50 text-center pt-2">Please select a type of schedule to continue</p>
     {:else if typeOfSchedule === 'standard'}
-      <TimeSpanInput id="cadency" label="Cadency" bind:value={cadency} className="mt-2"/>
-      <TimeSpanInput id="duration" label="Duration" bind:value={duration} className="mt-2"/>
+      <TimeSpanInput id="cadency" label="Repeat every" labelClass="w-40" bind:value={cadency} className="mt-2"/>
+      <TimeSpanInput id="duration" label="Duration" labelClass="w-40" bind:value={duration} className="mt-2"/>
     {:else if typeOfSchedule === 'weekly'}
-      <DaysOfWeekInput bind:value={daysOfWeek} className="grid gap-4 grid-cols-2 pt-2"/>
+      <DaysOfWeekInput bind:value={daysOfWeek} className="grid gap-4 grid-cols-3 pt-2"/>
     {/if}
   </div>
 
