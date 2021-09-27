@@ -43,7 +43,8 @@ export function getAllWithinFromSchedule(range: DateOnlyRange, schedule: Schedul
   while (shouldContinue) {
     let nthRange = getDateSpanFor(schedule, currentNth);
 
-    results.push({index: currentNth, range: nthRange} as ScheduleEvent)
+    if (schedule.endDate == null || toComparable(nthRange.from) <= toComparable(schedule.endDate))
+      results.push({index: currentNth, range: nthRange} as ScheduleEvent)
 
     currentNth += 1;
     let hasReachedTheEndOfSchedule = schedule.endDate != null && toComparable(nthRange.to) >= toComparable(schedule.endDate);
@@ -55,23 +56,10 @@ export function getAllWithinFromSchedule(range: DateOnlyRange, schedule: Schedul
 }
 
 export function getDateSpanFor(schedule: Schedule, nth: number): DateOnlyRange {
-  let from = addDays(schedule.startDate, getDurationDayCount(schedule.cadency) * (nth - 1));
-  let to = addDays(from, getDurationDayCount(schedule.duration));
-
   if (schedule.daysOfWeek === null || isDaysOfWeekEmpty(schedule.daysOfWeek))
-    return {from, to};
-
-  const daysActivatedPerWeek = countDaysOfWeek(schedule.daysOfWeek);
-  const currentCadencyDeltaNth = nth % daysActivatedPerWeek;
-  const daysShiftFromDeltaNth = getDayOfWeekFromLocalNth(
-    schedule.daysOfWeek,
-    getDayOfWeek(schedule.startDate),
-    currentCadencyDeltaNth
-  );
-
-  to = addDays(from, daysShiftFromDeltaNth);
-
-  return {from, to};
+    return getDateSpanForStandard(schedule, nth);
+  else
+    return getDateSpanForWeekly(schedule, nth);
 }
 
 export function getDurationDayCount(span: TimeSpan): number {
@@ -103,12 +91,41 @@ function mapSortDayOfWeek(day: DayOfWeek, weekStartOn: DayOfWeek): number {
   return sortValue;
 }
 
-function getDayOfWeekFromLocalNth(days: DaysOfWeek, weekStartOn: DayOfWeek, nth: number): DayOfWeek {
-  return getAllDaysOfWeek(days)
-    .map(o => ({sort: mapSortDayOfWeek(o, weekStartOn), value: o}))
-    .sort((a, b) => a.sort - b.sort)
-    .find(o => o.sort == nth)
-    .value;
+function getDateSpanForStandard(schedule: Schedule, nth: number): DateOnlyRange {
+  const from = addDays(schedule.startDate, getDurationDayCount(schedule.cadency) * (nth - 1));
+  const to = addDays(from, getDurationDayCount(schedule.duration));
+
+  return {from, to};
+}
+
+function getDateSpanForWeekly(schedule: Schedule, nth: number): DateOnlyRange {
+  const daysActivatedPerWeek = countDaysOfWeek(schedule.daysOfWeek);
+  const currentCadencyDeltaNth = (nth - 1) % daysActivatedPerWeek;
+  const daysShiftFromDeltaNth = getDaysShiftFromLocalNth(
+    schedule.daysOfWeek,
+    getDayOfWeek(schedule.startDate),
+    currentCadencyDeltaNth
+  );
+
+  const from = addDays(schedule.startDate, getDurationDayCount(schedule.cadency) * Math.floor((nth - 1) / daysActivatedPerWeek));
+
+  if (nth === 2 || nth === 1) {
+    console.log(`nth: ${nth} | ${getDayOfWeek(schedule.startDate)}, ${currentCadencyDeltaNth}, ${daysShiftFromDeltaNth}`)
+    console.log(from)
+  }
+
+  let day = addDays(from, daysShiftFromDeltaNth - 1);
+
+  return {from: day, to: addDays(day, 1)};
+}
+
+function getDaysShiftFromLocalNth(days: DaysOfWeek, weekStartOn: DayOfWeek, nth: number): DayOfWeek {
+  let daysShift = getAllDaysOfWeek(days)
+    .map(o => mapSortDayOfWeek(o, weekStartOn))
+    .sort()
+    .find((value, index) => index == nth);
+
+  return daysShift + 1;
 }
 
 function getLocalNthFromDayOfWeek(days: DaysOfWeek, weekStartOn: DayOfWeek, target: DayOfWeek): number | null {
