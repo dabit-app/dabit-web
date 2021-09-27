@@ -1,46 +1,57 @@
 import type {Habit, Schedule, TimeSpan} from "../../models/habit";
 import type {DateOnly, DateOnlyRange} from "../date/date-only";
+import {addDays, differenceInDays, getDayOfWeek, toComparable} from "../date/date-only";
 import type {DaysOfWeek} from "../date/day-of-week";
 import {countDaysOfWeek, DayOfWeek, getAllDaysOfWeek, isDaysOfWeekEmpty} from "../date/day-of-week";
-import {addDays, differenceInDays, getDayOfWeek, toComparable} from "../date/date-only";
 
 export interface HabitSchedule {
   habit: Habit;
   events: HabitEvent[];
 }
 
-export interface HabitEvent {
+export interface ScheduleEvent {
   index: number;
-  isDone: boolean;
   range: DateOnlyRange;
 }
 
+export type HabitEvent = ScheduleEvent & { isDone: boolean }
+
 export function getEventFor(habit: Habit, date: DateOnly): HabitEvent | undefined {
   let requestRange = {from: date, to: addDays(date, 1)} as DateOnlyRange;
-  let available = getAllWithin(requestRange, habit);
+  let available = getAllWithinFromHabit(requestRange, habit);
   return available.events.find(event => toComparable(date) >= toComparable(event.range.from) && toComparable(date) < toComparable(event.range.to));
 }
 
-export function getAllWithin(range: DateOnlyRange, habit: Habit): HabitSchedule {
-  const startNth = getNearestNthFrom(habit.schedule, range.from);
+export function getAllWithinFromHabit(range: DateOnlyRange, habit: Habit): HabitSchedule {
+  let scheduleEvents = getAllWithinFromSchedule(range, habit.schedule);
 
-  let results: HabitEvent[] = [];
+  let habitEvents = scheduleEvents.map(event => {
+    let isDone = habit.completions.includes(event.index);
+    return {...event, isDone} as HabitEvent;
+  });
+
+  return {habit, events: habitEvents};
+}
+
+export function getAllWithinFromSchedule(range: DateOnlyRange, schedule: Schedule): ScheduleEvent[] {
+  const startNth = getNearestNthFrom(schedule, range.from);
+
+  let results: ScheduleEvent[] = [];
   let currentNth = startNth;
   let shouldContinue = true;
 
   while (shouldContinue) {
-    let nthRange = getDateSpanFor(habit.schedule, currentNth);
-    let isDone = habit.completions.includes(currentNth);
+    let nthRange = getDateSpanFor(schedule, currentNth);
 
-    results.push({index: currentNth, range: nthRange, isDone} as HabitEvent)
+    results.push({index: currentNth, range: nthRange} as ScheduleEvent)
 
     currentNth += 1;
-    let hasReachedTheEndOfSchedule = habit.schedule.endDate != null && toComparable(nthRange.to) >= toComparable(habit.schedule.endDate);
+    let hasReachedTheEndOfSchedule = schedule.endDate != null && toComparable(nthRange.to) >= toComparable(schedule.endDate);
     let hasReachedTheEndOfTheRange = toComparable(nthRange.to) >= toComparable(range.to);
     shouldContinue = !hasReachedTheEndOfTheRange && !hasReachedTheEndOfSchedule;
   }
 
-  return {habit, events: results};
+  return results;
 }
 
 export function getDateSpanFor(schedule: Schedule, nth: number): DateOnlyRange {

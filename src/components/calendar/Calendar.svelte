@@ -2,9 +2,10 @@
   import Button from "../common/button/Button.svelte";
   import Card from "../common/card/Card.svelte";
   import {createEventDispatcher} from "svelte";
-  import {computeCalendarArray, computeScheduling} from "../../lib/habit/calendar";
   import {HabitSchedule} from "../../lib/habit/scheduling";
   import {addMonth, getCurrentMonth, SpecificMonth, toComparableMonth} from "../../lib/date/specific-month";
+  import {computeCalendarArray} from "../../lib/date/calendar/base-schedule-calendar";
+  import {getMultilineCalendarEvents} from "../../lib/date/calendar/multiple-schedule-calendar";
 
   export let currentMonth: SpecificMonth;
   export let scheduling: HabitSchedule[];
@@ -15,7 +16,7 @@
 
   // making the base calendar
   $: baseCalendar = computeCalendarArray(currentMonth);
-  $: events = computeScheduling(scheduling, currentMonth)
+  $: events = getMultilineCalendarEvents(scheduling, currentMonth)
 
   // function for convenience
   $: dayOfCurrentMonth = (day) => new Date(Date.UTC(currentMonth.year, currentMonth.month - 1, day));
@@ -58,8 +59,8 @@
   {/each}
 </div>
 
-<div id="layers">
-  <div id="layer-base" class="grid grid-cols-7 absolute" style="width: {calendarWidth}px">
+<div>
+  <div class="grid grid-cols-7 absolute" style="width: {calendarWidth}px">
     {#each baseCalendar as day}
       {#if day !== undefined }
         <Card rounded={false} className="min-h-24 border border-warm-gray-50 dark:border-dark-700 pb-4">

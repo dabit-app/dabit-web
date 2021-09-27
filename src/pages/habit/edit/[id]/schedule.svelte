@@ -9,6 +9,7 @@
   import TimeSpanInput from "../../../../components/common/form/TimeSpanInput.svelte";
   import SelectInput from "../../../../components/common/form/SelectInput.svelte";
   import DaysOfWeekInput from "../../../../components/common/form/DaysOfWeekInput.svelte";
+  import SmallCalendar from "../../../../components/calendar/small/SmallCalendar.svelte";
 
   export let scoped;
   $: habit = scoped.habit
@@ -23,22 +24,38 @@
   let schedule: Schedule | null;
   let typeOfSchedule: 'none' | 'standard' | 'weekly' = 'none';
 
-  $: {
-    schedule = {
-      startDate: DateOnly.fromString(startDate),
-      endDate: useEndDate ? DateOnly.fromString(endDate) : null,
-    } as Schedule;
+  function isScheduleValid(): boolean {
+    const dateCorrect = startDate?.length > 0 && (!useEndDate || endDate?.length > 0)
+    const standardCorrect = !!cadency && !!duration;
+    const weeklyCorrect = !!schedule;
 
-    if (typeOfSchedule === 'standard') {
-      schedule.cadency = cadency
-      schedule.duration = duration;
-      schedule.daysOfWeek = null;
+    switch (typeOfSchedule) {
+      case "none": return false;
+      case "standard": return dateCorrect && standardCorrect;
+      case "weekly": return dateCorrect && weeklyCorrect;
     }
+  }
 
-    if (typeOfSchedule === 'weekly') {
-      schedule.cadency = {count: 1, unit: 'week'} as TimeSpan
-      schedule.duration = {count: 1, unit: 'week'} as TimeSpan
-      schedule.daysOfWeek = daysOfWeek
+  $: {
+    if (!isScheduleValid()) {
+      schedule = null;
+    } else {
+      schedule = {
+        startDate: DateOnly.fromString(startDate),
+        endDate: useEndDate ? DateOnly.fromString(endDate) : null,
+      } as Schedule;
+
+      if (typeOfSchedule === 'standard') {
+        schedule.cadency = cadency
+        schedule.duration = duration;
+        schedule.daysOfWeek = null;
+      }
+
+      if (typeOfSchedule === 'weekly') {
+        schedule.cadency = {count: 1, unit: 'week'} as TimeSpan
+        schedule.duration = {count: 1, unit: 'week'} as TimeSpan
+        schedule.daysOfWeek = daysOfWeek
+      }
     }
   }
 </script>
@@ -46,34 +63,44 @@
 
 <div class="text-5xl pb-10 text-center">Set a schedule</div>
 
-<section>
-  <DateInput id="start-date" label="Start date" bind:value={startDate}/>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-x-4">
+  <div>
+    <div class="text-2xl text-center pb-2">Setup</div>
+    <DateInput id="start-date" label="Start date" bind:value={startDate}/>
 
-  <div class="flex mt-2">
-    <Checkbox bind:checked={useEndDate} className="pr-2 pt-1"/>
-    <DateInput id="end-date" label="End date" bind:value={endDate} disabled={!useEndDate} className="flex-auto"/>
+    <div class="flex mt-2">
+      <Checkbox bind:checked={useEndDate} className="pr-2 pt-1"/>
+      <DateInput id="end-date" label="End date" bind:value={endDate} disabled={!useEndDate} className="flex-auto"/>
+    </div>
+
+    <div class="flex justify-center pt-2">
+      <SelectInput bind:value={typeOfSchedule}>
+        <option value="none">-</option>
+        <option value="standard">Standard</option>
+        <option value="weekly">Weekly</option>
+      </SelectInput>
+    </div>
+
+    {#if typeOfSchedule === 'none'}
+      <p class="opacity-50 text-center pt-2">Please select a type of schedule to continue</p>
+    {:else if typeOfSchedule === 'standard'}
+      <TimeSpanInput id="cadency" label="Cadency" bind:value={cadency} className="mt-2"/>
+      <TimeSpanInput id="duration" label="Duration" bind:value={duration} className="mt-2"/>
+    {:else if typeOfSchedule === 'weekly'}
+      <DaysOfWeekInput bind:value={daysOfWeek} className="pt-2"/>
+    {/if}
   </div>
 
-  <div class="flex justify-center pt-2">
-    <SelectInput bind:value={typeOfSchedule}>
-      <option value="none">-</option>
-      <option value="standard">Standard</option>
-      <option value="weekly">Weekly</option>
-    </SelectInput>
+  <div class="px-6">
+    <div class="text-2xl text-center pb-2">Preview</div>
+    {#if schedule !== null}
+      <SmallCalendar schedule={schedule}/>
+    {:else}
+      <p class="opacity-50 text-center pt-8 text-2xl">No preview available yet</p>
+    {/if}
   </div>
+</div>
 
-  {#if typeOfSchedule === 'none'}
-    <p class="opacity-50 text-center pt-2">Please select a type of schedule to continue</p>
-  {:else if typeOfSchedule === 'standard'}
-    <TimeSpanInput id="cadency" label="Cadency" bind:value={cadency} className="mt-2"/>
-    <TimeSpanInput id="duration" label="Duration" bind:value={duration} className="mt-2"/>
-  {:else if typeOfSchedule === 'weekly'}
-    <DaysOfWeekInput bind:value={daysOfWeek} className="pt-2"/>
-  {/if}
-
-  <!-- Cadency, Duration, DayOfWeek -->
-
-  <div class="pt-4 flex justify-center">
-    <Button icon="chevron_left" text="Back to edit menu" href={`/habit/edit/${habit.id}/`}/>
-  </div>
-</section>
+<div class="pt-4 flex justify-center">
+  <Button icon="chevron_left" text="Back to edit menu" href={`/habit/edit/${habit.id}/`}/>
+</div>
