@@ -30,9 +30,12 @@
     const weeklyCorrect = !!schedule;
 
     switch (typeOfSchedule) {
-      case "none": return false;
-      case "standard": return dateCorrect && standardCorrect;
-      case "weekly": return dateCorrect && weeklyCorrect;
+      case "none":
+        return false;
+      case "standard":
+        return dateCorrect && standardCorrect;
+      case "weekly":
+        return dateCorrect && weeklyCorrect;
     }
   }
 
@@ -66,11 +69,16 @@
 <div class="grid grid-cols-1 md:grid-cols-2 gap-x-4">
   <div>
     <div class="text-2xl text-center pb-2">Setup</div>
-    <DateInput id="start-date" label="Start date" bind:value={startDate}/>
+
 
     <div class="flex mt-2">
-      <Checkbox bind:checked={useEndDate} className="pr-2 pt-1"/>
-      <DateInput id="end-date" label="End date" bind:value={endDate} disabled={!useEndDate} className="flex-auto"/>
+      <div class="w-8"></div>
+      <DateInput id="start-date" label="Start date" labelClass="w-22" bind:value={startDate} className="flex-auto"/>
+    </div>
+
+    <div class="flex mt-2">
+      <Checkbox bind:checked={useEndDate} className="pr-2 pt-1 w-8"/>
+      <DateInput id="end-date" label="End date" labelClass="w-22" bind:value={endDate} disabled={!useEndDate} className="flex-auto"/>
     </div>
 
     <div class="flex justify-center pt-2">
@@ -87,7 +95,7 @@
       <TimeSpanInput id="cadency" label="Cadency" bind:value={cadency} className="mt-2"/>
       <TimeSpanInput id="duration" label="Duration" bind:value={duration} className="mt-2"/>
     {:else if typeOfSchedule === 'weekly'}
-      <DaysOfWeekInput bind:value={daysOfWeek} className="pt-2"/>
+      <DaysOfWeekInput bind:value={daysOfWeek} className="grid gap-4 grid-cols-2 pt-2"/>
     {/if}
   </div>
 

@@ -8,7 +8,7 @@
   const itemClass = "px-2 py-2 rounded-md";
 </script>
 
-<div class="flex justify-evenly flex-wrap {className}">
+<div class="{className}">
   <ToggleCardInput bind:checked={value.sunday} className={itemClass}>Sunday</ToggleCardInput>
   <ToggleCardInput bind:checked={value.monday} className={itemClass}>Monday</ToggleCardInput>
   <ToggleCardInput bind:checked={value.tuesday} className={itemClass}>Tuesday</ToggleCardInput>

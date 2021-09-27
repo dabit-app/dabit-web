@@ -7,7 +7,7 @@
   }
 
   const baseClass = "border dark:bg-dark-200 focus:outline-none focus:border-dark-200 focus:dark:border-warm-gray-300 dark:border-dark-700"
-  const checkedClass = "text-orange-400"
+  const checkedClass = "bg-warm-gray-100 text-orange-400"
   const uncheckedClass = "opacity-50"
 
   $: classes = `${baseClass} ${checked ? checkedClass : uncheckedClass}`;
