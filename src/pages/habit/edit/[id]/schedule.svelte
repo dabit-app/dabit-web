@@ -95,7 +95,7 @@
       <TimeSpanInput id="cadency" label="Repeat every" labelClass="w-40" bind:value={cadency} className="mt-2"/>
       <TimeSpanInput id="duration" label="Duration" labelClass="w-40" bind:value={duration} className="mt-2"/>
     {:else if typeOfSchedule === 'weekly'}
-      <DaysOfWeekInput bind:value={daysOfWeek} className="grid gap-4 grid-cols-3 pt-2"/>
+      <DaysOfWeekInput bind:value={daysOfWeek} className="grid gap-2 grid-cols-3 pt-2 text-center"/>
     {/if}
   </div>
 
