@@ -6,7 +6,9 @@
   export let scoped;
   $: habit = scoped.habit
 
-  const cardClass = "px-4 py-8 rounded-lg flex flex-row justify-center items-center";
+  $: canSetSchedule = !habit.schedule
+  const cardClass = "px-4 p-2 h-24 rounded-lg flex flex-row justify-center items-center";
+  const disabledClass = 'pointer-events-none opacity-50';
 </script>
 
 <div class="max-w-screen-sm mx-auto">
@@ -18,12 +20,21 @@
         Name
       </div>
     </Card>
-    <Card className={cardClass} hoverable href={`/habit/edit/${habit.id}/schedule`}>
-      <Icon>schedule</Icon>
-      <div class="text-xl pl-2">
-        Schedule
-      </div>
-    </Card>
+    <div class={canSetSchedule ? '' : disabledClass}>
+      <Card className={cardClass} hoverable href={`/habit/edit/${habit.id}/schedule`}>
+        <div class="flex flex-col">
+          <div class="flex flex-row">
+            <Icon>schedule</Icon>
+            <div class="text-xl pl-2">
+              Schedule
+            </div>
+          </div>
+          {#if !canSetSchedule}
+            <div class="text-sm text-orange-400">Schedule is already set</div>
+          {/if}
+        </div>
+      </Card>
+    </div>
   </div>
   <div class="pt-4 flex justify-center">
     <Button icon="chevron_left" text="Back to all habits" href="/habit/all"/>

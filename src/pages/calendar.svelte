@@ -7,7 +7,9 @@
   let currentMonth = getCurrentMonth();
 
   $: range = getWholeMonthRange(currentMonth);
-  $: scheduling = Object.values($habitStore).map(habit => getAllWithinFromHabit(range, habit));
+  $: scheduling = Object.values($habitStore)
+    .filter(habit => !!habit.schedule)
+    .map(habit => getAllWithinFromHabit(range, habit));
 
   function onMonthChange(event) {
     currentMonth = event.detail.month;

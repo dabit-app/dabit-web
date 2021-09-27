@@ -9,7 +9,7 @@
     .map(habit => ({
       habit,
       doneCount: habit.completions.length,
-      upToTodayCount: getNearestNthFrom(habit.schedule, today())
+      upToTodayCount: !!habit.schedule ? getNearestNthFrom(habit.schedule, today()) : null
     }))
 </script>
 
@@ -38,7 +38,13 @@
           <div class="text-xl pl-4">{item.habit.name}</div>
         </div>
         <div class="table-cell bg-warm-gray-100 dark:bg-dark-400 align-middle">
-          <p>{item.doneCount}/{item.upToTodayCount}</p>
+          {#if item.habit.schedule}
+            <p>{item.doneCount}/{item.upToTodayCount}</p>
+          {:else}
+            <div class="pt-3">
+              <Icon>timer_off</Icon>
+            </div>
+          {/if}
         </div>
         <div class="table-cell bg-warm-gray-100 dark:bg-dark-400 align-middle">
           <Button icon="edit" className="mx-3 inline-block" href={`/habit/edit/${item.habit.id}`}/>

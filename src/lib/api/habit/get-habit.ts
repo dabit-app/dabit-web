@@ -30,7 +30,10 @@ export async function getAllHabits(page: number = 1): Promise<Paginated<Habit>> 
 }
 
 function convertDateFromHabit(habit: any): Habit {
-  habit.schedule.startDate = fromString(habit.schedule.startDate);
-  habit.schedule.endDate = habit.schedule.endDate === null ? null : fromString(habit.schedule.endDate);
+  if (!!habit.schedule) {
+    habit.schedule.startDate = fromString(habit.schedule.startDate);
+    habit.schedule.endDate = habit.schedule.endDate === null ? null : fromString(habit.schedule.endDate);
+  }
+
   return habit;
 }
