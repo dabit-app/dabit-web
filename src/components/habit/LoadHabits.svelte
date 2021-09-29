@@ -10,27 +10,43 @@
   let results: IndexedHabit = {};
 
   const fetchedResult = tweened(0, {duration: 500, easing: cubicOut});
+  let failedToFetch = false;
 
   onMount(async () => {
     while (shouldContinue) {
-      let data = await getAllHabits(currentPage)
+      const data = await getAllHabits(currentPage)
 
-      data.items.forEach(habit => {
-        results[habit.id] = habit;
-      })
+      if (data.ok) {
+        let page = data.val;
+        page.items.forEach(habit => {
+          results[habit.id] = habit;
+        })
 
-      shouldContinue = results.length < data.total;
-      currentPage += shouldContinue ? 1 : 0;
-      $fetchedResult = (results.length / data.total) * 100;
+        shouldContinue = results.length < page.total;
+        currentPage += shouldContinue ? 1 : 0;
+        $fetchedResult = (results.length / page.total) * 100;
+      } else {
+        failedToFetch = true;
+        shouldContinue = false;
+      }
     }
 
-    habitStore.set(results);
+    if (!failedToFetch)
+      habitStore.set(results);
   })
 
 </script>
 
-<div class="max-w-screen-sm mx-auto w-screen-sm flex flex-col items-center">
-  <p class="text-5xl animate-pulse">🚀</p>
-  <p class="text-3xl animate-pulse">Loading your habits ...</p>
-  <p class="text-3xl mt-2 animate-pulse">{Math.floor($fetchedResult)}%</p>
-</div>
+{#if failedToFetch}
+  <div class="max-w-screen-sm mx-auto w-screen-sm flex flex-col items-center">
+    <p class="text-5xl">😕</p>
+    <p class="text-5xl mt-2">Failed to load</p>
+    <p class="text-3xl mt-2 opacity-50">Something went wrong with the server</p>
+  </div>
+{:else}
+  <div class="max-w-screen-sm mx-auto w-screen-sm flex flex-col items-center">
+    <p class="text-5xl animate-pulse">🚀</p>
+    <p class="text-3xl animate-pulse">Loading your habits ...</p>
+    <p class="text-3xl mt-2 animate-pulse">{Math.floor($fetchedResult)}%</p>
+  </div>
+{/if}

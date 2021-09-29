@@ -1,6 +1,6 @@
 <script lang="ts">
   import Card from "../../../../components/common/card/Card.svelte";
-  import Icon from "../../../../components/common/icon/Icon.svelte";
+  import Icon from "../../../../components/common/Icon.svelte";
   import Button from "../../../../components/common/button/Button.svelte";
 
   export let scoped;

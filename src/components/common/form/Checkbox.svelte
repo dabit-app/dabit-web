@@ -1,5 +1,5 @@
 <script lang="ts">
-  import Icon from "../icon/Icon.svelte";
+  import Icon from "../Icon.svelte";
 
   export let checked = false;
   export let className = {};

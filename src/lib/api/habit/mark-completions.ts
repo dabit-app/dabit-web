@@ -33,6 +33,6 @@ async function toggleDayCompletion(habit: Habit, day: DateOnly, completed: boole
     {day: toString(day)},
     get(jwt)
   )
-    .then(_ => true)
+    .then(result => result.ok)
     .catch(_ => false)
 }

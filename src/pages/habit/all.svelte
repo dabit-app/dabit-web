@@ -3,7 +3,7 @@
   import {getNearestNthFrom} from "../../lib/habit/scheduling";
   import {today} from "../../lib/date/date-only";
   import Button from "../../components/common/button/Button.svelte";
-  import Icon from "../../components/common/icon/Icon.svelte";
+  import Icon from "../../components/common/Icon.svelte";
 
   $: data = Object.values($habitStore)
     .map(habit => ({

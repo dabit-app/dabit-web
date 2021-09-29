@@ -20,6 +20,6 @@ async function changeNameApiCall(habit: Habit, name: string): Promise<boolean> {
     {name},
     get(jwt)
   )
-    .then(_ => true)
+    .then(result => result.ok)
     .catch(_ => false)
 }
