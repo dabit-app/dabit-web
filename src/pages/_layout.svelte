@@ -20,7 +20,7 @@
   $: userIsAuthenticated = $jwt !== null
 </script>
 
-<div class="h-full bg-warm-gray-50 dark:bg-dark-700 dark:text-white">
+<div>
   <div class="max-w-screen-md mx-auto">
     <header>
       <div class="mx-auto flex pt-5">
