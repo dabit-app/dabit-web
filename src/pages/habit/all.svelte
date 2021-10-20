@@ -54,6 +54,8 @@
   </div>
 </div>
 
+<Button icon="add_task" text="Create a new habit" className="mx-auto mt-2" href="create"/>
+
 <style>
   .table-cell:first-child {
     border-radius: 0.375rem 0 0 0.375rem;
